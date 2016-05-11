@@ -13,7 +13,7 @@ public class Caminhos {
       private String caminhoarquivo ;         
       private String caminhoarBin ;    
       
-      public String caminhoRafa="D:\\aula0.pdf";
+      public String caminhoRafa="C:\\rafael\\";
 //      "\\\\192.168.0.1\\arquivos\\Certificados";
     //String caminhoarquivo = "\\\\192.168.0.1\\arquivos\\Certificados";
     //String caminhoarquivo = "D:\\Arquivos Geral\\Certificados\\";

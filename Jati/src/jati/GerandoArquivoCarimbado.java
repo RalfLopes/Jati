@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gravabncertificado;
+package jati;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -27,7 +27,6 @@ import java.nio.channels.FileChannel;
  */
 public class GerandoArquivoCarimbado {
 
-    
     static PdfReader reader;
     static float width = 0;
     static float height = 0;
@@ -35,15 +34,17 @@ public class GerandoArquivoCarimbado {
     /**
      *
      * @param caminho
+     * @param document
      * @return
      * @throws IOException
+     * @throws com.itextpdf.text.DocumentException
      */
     public static PdfWriter alocaDoc(String caminho, Document document) throws IOException, DocumentException {
-        montaraAquivo(caminho);
+        
         // PDFWRITER = ESCRITOR-GERADOR DE PDF 
         // GETINSTANCE RECEBE O DOCUMENTO CRIADO 
         //NEW FILEOUTPUTSTREAM ALOCA O ARQUIVO PDF NO CAMINHO DESCRITO
-        PdfWriter writer = PdfWriter.getInstance(document,
+        PdfWriter writer = PdfWriter.getInstance(montaraAquivo(caminho),
                 new FileOutputStream(caminho.substring(0, caminho.length() - 4) + "-C.pdf"));
 
         return writer;
@@ -54,35 +55,34 @@ public class GerandoArquivoCarimbado {
         try {
             reader = new PdfReader(caminho);
             // n recebe o numero total de paginas
-            
 
             //Tamanho da primeira Pagina
             //Rectangle psize2 = PageSize.A4;
             Rectangle psize = reader.getPageSize(1);
             width = psize.getWidth();
             height = psize.getHeight();
-            
+
             //Cria Segundo PDF 
         } catch (IOException e) {
         }
-Document documento = new Document(new Rectangle(width, height));
+        Document documento = new Document(new Rectangle(width, height));
         return documento;
 
     }
 
     public static void GerandoArquivoCarimbadoPDF(String caminho, String BN) throws InvalidPdfException, IOException {
         //Copiando arquivo informado.
-        Document document = montaraAquivo(caminho);
 
         try {
 
             // Adicionado parametro para nao retornar erro quando o documento for protegido.
             PdfReader.unethicalreading = true;
-
+            Document document = montaraAquivo(caminho);
             PdfWriter writer = alocaDoc(caminho, document);
             // ABRE O DOCUMENTO CRIADO PARA MANUSEIO
             document.open();
-
+            
+            
             //SUBSTRING RETIRA PARTE DO TEXTO ENTRE OS INDICES ESPECIFICADOS 
             //caminhoDestino RECEBE UM NOVO CAMINHO RESULTANTE DOS INDICES DE CAMINHO.LENGTH - BN.LENGTH
             // QUE FORMAM UMA NOVA STRING
@@ -118,10 +118,9 @@ Document documento = new Document(new Rectangle(width, height));
             PdfContentByte cb = writer.getDirectContent();
 
             int i = 0;
-            int p = 0;
             while (i < reader.getNumberOfPages()) {
                 document.newPage();
-                
+
                 i++;
 
                 //PDFCONTETBYTE GERA UMA ESPECIE DE CODIGO DE BARRAS 
@@ -129,7 +128,6 @@ Document documento = new Document(new Rectangle(width, height));
                 PdfImportedPage page1 = writer.getImportedPage(reader, i);
                 cb.addTemplate(page1, 0, i * 0.2f);
 
-        
                 //CARIMBO DA BN
                 BaseFont bf = BaseFont.createFont(BaseFont.COURIER_BOLD, BaseFont.CP1250, BaseFont.NOT_EMBEDDED);
                 cb.beginText();
@@ -150,7 +148,6 @@ Document documento = new Document(new Rectangle(width, height));
             reader.close();
             origem.delete();
 
-        
         } catch (IOException | DocumentException ex) {
         }
 
