@@ -27,15 +27,10 @@ import java.nio.channels.FileChannel;
  */
 public class GerandoArquivoCarimbado {
 
-   static int n = 0;
-   static PdfReader reader;
-   static float width=0;
-   static float height=0;
-            
-    public GerandoArquivoCarimbado() {
-        this.reader = null;
-
-    }
+    
+    static PdfReader reader;
+    static float width = 0;
+    static float height = 0;
 
     /**
      *
@@ -43,34 +38,34 @@ public class GerandoArquivoCarimbado {
      * @return
      * @throws IOException
      */
-    
-   public static PdfWriter alocaDoc(String caminho, Document document) throws IOException, DocumentException{
-       montaraAquivo(caminho);
-       // PDFWRITER = ESCRITOR-GERADOR DE PDF 
-            // GETINSTANCE RECEBE O DOCUMENTO CRIADO 
-            //NEW FILEOUTPUTSTREAM ALOCA O ARQUIVO PDF NO CAMINHO DESCRITO
-       PdfWriter writer = PdfWriter.getInstance(document,
-            new FileOutputStream(caminho.substring(0, caminho.length() - 4) + "-C.pdf"));
+    public static PdfWriter alocaDoc(String caminho, Document document) throws IOException, DocumentException {
+        montaraAquivo(caminho);
+        // PDFWRITER = ESCRITOR-GERADOR DE PDF 
+        // GETINSTANCE RECEBE O DOCUMENTO CRIADO 
+        //NEW FILEOUTPUTSTREAM ALOCA O ARQUIVO PDF NO CAMINHO DESCRITO
+        PdfWriter writer = PdfWriter.getInstance(document,
+                new FileOutputStream(caminho.substring(0, caminho.length() - 4) + "-C.pdf"));
 
-       return  writer;
-   }
-    
-    
-    public static Document montaraAquivo(String caminho) throws IOException {
-         reader = new PdfReader(caminho);
+        return writer;
+    }
 
-        // n recebe o numero total de paginas
-        n = reader.getNumberOfPages();
+    public static Document montaraAquivo(String caminho) {
 
-        //Tamanho da primeira Pagina
-        //Rectangle psize2 = PageSize.A4;
-        Rectangle psize = reader.getPageSize(1);
-         width = psize.getWidth();
-         height = psize.getHeight();
-        //Cria Segundo PDF 
-         
+        try {
+            reader = new PdfReader(caminho);
+            // n recebe o numero total de paginas
+            
 
-        Document documento = new Document(new Rectangle(width, height));
+            //Tamanho da primeira Pagina
+            //Rectangle psize2 = PageSize.A4;
+            Rectangle psize = reader.getPageSize(1);
+            width = psize.getWidth();
+            height = psize.getHeight();
+            
+            //Cria Segundo PDF 
+        } catch (IOException e) {
+        }
+Document documento = new Document(new Rectangle(width, height));
         return documento;
 
     }
@@ -83,9 +78,8 @@ public class GerandoArquivoCarimbado {
 
             // Adicionado parametro para nao retornar erro quando o documento for protegido.
             PdfReader.unethicalreading = true;
-            
-           
-            PdfWriter writer =alocaDoc(caminho, document);
+
+            PdfWriter writer = alocaDoc(caminho, document);
             // ABRE O DOCUMENTO CRIADO PARA MANUSEIO
             document.open();
 
@@ -98,7 +92,6 @@ public class GerandoArquivoCarimbado {
             if (!destinooriginal.exists()) {
                 destinooriginal.mkdir();
             }
-            
 
             caminhodestino = (caminhodestino + "ORIGINAL\\" + BN);
 
@@ -116,20 +109,19 @@ public class GerandoArquivoCarimbado {
 
             fis.close();
             fos.close();
-                inChannel.close();
+            inChannel.close();
             outChannel.close();
 
             // Thread.sleep(10);
             BN = BN.substring(0, BN.length() - 4);
 
             PdfContentByte cb = writer.getDirectContent();
-            
-            
+
             int i = 0;
             int p = 0;
-            while (i < n) {
+            while (i < reader.getNumberOfPages()) {
                 document.newPage();
-                p++;
+                
                 i++;
 
                 //PDFCONTETBYTE GERA UMA ESPECIE DE CODIGO DE BARRAS 
@@ -137,13 +129,7 @@ public class GerandoArquivoCarimbado {
                 PdfImportedPage page1 = writer.getImportedPage(reader, i);
                 cb.addTemplate(page1, 0, i * 0.2f);
 
-        // Page 1: a rectangle
-        /* RETANGULO DESATIVADO
-                 drawRectangle(under, 100, 50);
-                 under.setRGBColorFill(255, 220, 220);
-                 under.rectangle(width /50, 5, 118, 40);
-                 under.fill();
-                 */
+        
                 //CARIMBO DA BN
                 BaseFont bf = BaseFont.createFont(BaseFont.COURIER_BOLD, BaseFont.CP1250, BaseFont.NOT_EMBEDDED);
                 cb.beginText();
@@ -164,29 +150,7 @@ public class GerandoArquivoCarimbado {
             reader.close();
             origem.delete();
 
-            /* PdfContentByte under = writer.getDirectContentUnder();
-    
-             // Page 1: a rectangle
-             drawRectangle(under, 20, 20);
-             under.setRGBColorFill(0xFF, 0xD7, 0x00);
-             under.rectangle(5, 5, 15, 15);
-             under.fill(); */
-        //document.newPage();
-            //COPIANDO ARQUIVO CARIMBADO
-            /* DESABILITADO PORQUE NAO ESTAVA FUNCIONANDO.
-             boolean bool;
-
-             //caminhoarquivo = caminhoarquivo.replace("\\", "\\\\");
-             //caminhodestino = caminhodestino.replace("\\", "\\\\");
         
-             File origem = new File(caminhoarquivo);
-             File destino = new File(caminhodestino);
-    
-        
-             bool = origem.renameTo(destino);
-             System.out.println(origem);
-             System.out.println(caminhodestino);
-             */
         } catch (IOException | DocumentException ex) {
         }
 
