@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 
 
-public class GravaBnCertificado  {
+public class GravaBnCertificado_1  {
 
   public static void main(String[] args) throws InterruptedException {
     int x = 0; 
@@ -26,14 +26,14 @@ public class GravaBnCertificado  {
     //String tipoarquivo = caminhoarquivo.substring(caminhoarquivo.length() - 3,3);
     //String caminhoarquivo = "\\\\192.168.0.1\\arquivos\\Certificados\\CH\\12\\";
    
-    List<File> pdfs = PercorrerDiretorioLista.RetornandoListaCertificados(new File(caminhoarquivo), ".pdf");
+    List<File> pdfs = PercorrerDiretorioLista_1.RetornandoListaCertificados(new File(caminhoarquivo), ".pdf");
      
     pdfs.stream().forEach((pdf) -> {
         try {
-            GerandoArquivoCarimbado.GerandoArquivoCarimbadoPDF(pdf.getAbsolutePath(), pdf.getName().substring(0, pdf.getName().length()));
+            GerandoArquivoCarimbado_1.GerandoArquivoCarimbadoPDF(pdf.getAbsolutePath(), pdf.getName().substring(0, pdf.getName().length()));
                        
         } catch (IOException ex) {
-            Logger.getLogger(GravaBnCertificado.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GravaBnCertificado_1.class.getName()).log(Level.SEVERE, null, ex);
         }
       });
     /* DESABILITADO POR FALTA DE ESPACO

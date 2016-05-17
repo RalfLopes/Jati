@@ -7,6 +7,7 @@ package jati;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.exceptions.InvalidPdfException;
 import com.itextpdf.text.pdf.BaseFont;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 
 /**
@@ -57,36 +59,34 @@ public class GerandoArquivoCarimbado {
             // n recebe o numero total de paginas
 
             //Tamanho da primeira Pagina
-            //Rectangle psize2 = PageSize.A4;
-            Rectangle psize = reader.getPageSize(1);
-            width = psize.getWidth();
-            height = psize.getHeight();
-
+        
+        
             //Cria Segundo PDF 
         } catch (IOException e) {
         }
-        Document documento = new Document(new Rectangle(width, height));
+        Document documento = new Document(PageSize.A4);
         return documento;
 
     }
 
-    public static void GerandoArquivoCarimbadoPDF(String caminho, String BN) throws InvalidPdfException, IOException {
+    public static void GerandoArquivoCarimbadoPDF(String caminhoarquivo, String BN) throws InvalidPdfException, IOException {
         //Copiando arquivo informado.
 
         try {
 
             // Adicionado parametro para nao retornar erro quando o documento for protegido.
             PdfReader.unethicalreading = true;
-            Document document = montaraAquivo(caminho);
-            PdfWriter writer = alocaDoc(caminho, document);
+            
+            PdfWriter writer= PdfWriter.getInstance(montaraAquivo(caminhoarquivo),
+                    new FileOutputStream(caminhoarquivo.substring(0,caminhoarquivo.length() - 4) + "-C.pdf"));
             // ABRE O DOCUMENTO CRIADO PARA MANUSEIO
-            document.open();
+            montaraAquivo(caminhoarquivo).open();
             
             
             //SUBSTRING RETIRA PARTE DO TEXTO ENTRE OS INDICES ESPECIFICADOS 
             //caminhoDestino RECEBE UM NOVO CAMINHO RESULTANTE DOS INDICES DE CAMINHO.LENGTH - BN.LENGTH
             // QUE FORMAM UMA NOVA STRING
-            String caminhodestino = (caminho.substring(0, caminho.length() - BN.length()));
+            String caminhodestino = (caminhoarquivo.substring(0, caminhoarquivo.length() - BN.length()));
 
             File destinooriginal = new File(caminhodestino + "ORIGINAL\\");
             if (!destinooriginal.exists()) {
@@ -96,7 +96,7 @@ public class GerandoArquivoCarimbado {
             caminhodestino = (caminhodestino + "ORIGINAL\\" + BN);
 
             //TESTANDO NOVA FORMA DE COPIAR
-            File origem = new File(caminho);
+            File origem = new File(caminhoarquivo);
             File destino = new File(caminhodestino);
 
             FileInputStream fis = new FileInputStream(origem);
@@ -119,7 +119,7 @@ public class GerandoArquivoCarimbado {
 
             int i = 0;
             while (i < reader.getNumberOfPages()) {
-                document.newPage();
+                montaraAquivo(caminhodestino).newPage();
 
                 i++;
 
@@ -143,7 +143,7 @@ public class GerandoArquivoCarimbado {
 
             }
 
-            document.close();
+            montaraAquivo(caminhodestino).close();
             writer.close();
             reader.close();
             origem.delete();

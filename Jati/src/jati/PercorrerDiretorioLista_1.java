@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author gustavo.lima
  */
-public class PercorrerDiretorioLista {
+public class PercorrerDiretorioLista_1 {
     
         
 public static List<File> RetornandoListaCertificados(File pasta, String ext) {

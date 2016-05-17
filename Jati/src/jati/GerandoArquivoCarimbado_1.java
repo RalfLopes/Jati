@@ -8,6 +8,7 @@ package gravabncertificado;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.exceptions.InvalidPdfException;
 import com.itextpdf.text.pdf.BaseFont;
@@ -25,7 +26,7 @@ import java.nio.channels.FileChannel;
  *
  * @author gustavo.lima
  */
-public class GerandoArquivoCarimbado {
+public class GerandoArquivoCarimbado_1 {
     
     public static void GerandoArquivoCarimbadoPDF(String caminhoarquivo, String BN) throws InvalidPdfException{
      //Copiando arquivo informado.
@@ -42,12 +43,11 @@ public class GerandoArquivoCarimbado {
       int n = reader.getNumberOfPages();
      
       //Tamanho da primeira Pagina
-      Rectangle psize = reader.getPageSize(1);
-      float width = psize.getWidth();
-      float height = psize.getHeight();
+      ;
+      
       //Cria Segundo PDF
     
-      Document document = new Document(new Rectangle(width, height));
+      Document document = new Document(PageSize.A4,36,36,36,36);
              
       PdfWriter writer = PdfWriter.getInstance(document,
         new FileOutputStream(caminhoarquivo.substring(0,caminhoarquivo.length() - 4) + "-C.pdf"));
